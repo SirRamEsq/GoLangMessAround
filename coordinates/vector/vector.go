@@ -13,6 +13,17 @@ type Vec3 struct {
 	Z float64
 }
 
+func (vecA Vec3) AddVec3(vecB Vec3) Vec3{
+	newVec := Vec3{}
+
+	newVec.X = vecA.X + vecB.X
+	newVec.Y = vecA.Y + vecB.Y
+	newVec.Z = vecA.Z + vecB.Z
+	newVec.X = vecA.X + vecB.X
+
+	return newVec
+}
+
 //Vec4 represents a 4D coordinate pair
 type Vec4 struct {
 	X float64

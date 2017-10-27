@@ -126,7 +126,7 @@ func Get(name string) *Texture {
 	return tex
 }
 
-//Init initializes the texture manager singleton
-func Init() {
+//init initializes the texture manager singleton
+func init() {
 	manager.textures = make(map[string]*Texture)
 }
