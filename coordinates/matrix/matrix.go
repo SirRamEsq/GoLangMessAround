@@ -1,7 +1,7 @@
 package matrix
 
 import (
-	vector "lengine/vector"
+	vector "lengine/coordinates/vector"
 	"math"
 )
 
