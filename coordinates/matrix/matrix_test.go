@@ -3,31 +3,19 @@ package matrix_test
 import (
 	"lengine/coordinates/matrix"
 	vector "lengine/coordinates/vector"
-	"math"
-	"strconv"
+	"lengine/testing/comparison"
 	"testing"
 )
-
-func Round(f float64) float64 {
-	return math.Floor(f + .5)
-}
-
-func CompareFloat(expected float64, actual float64, t *testing.T) {
-	if expected != actual {
-		errorString := "Expected X: " + strconv.FormatFloat(expected, 'f', -1, 64) + " - Actual: " + strconv.FormatFloat(actual, 'f', -1, 64)
-		t.Error(errorString)
-	}
-}
 
 func TestOrthographic(t *testing.T) {
 	v1 := vector.Vec4{512, 384, 1, 1}
 	ortho := matrix.NewOrthographic(vector.Vec2{1024, 768})
 	v1 = ortho.MultiplyVector(v1)
 
-	CompareFloat(0, v1.X, t)
-	CompareFloat(0, v1.Y, t)
-	CompareFloat(-1, v1.Z, t)
-	CompareFloat(1, v1.W, t)
+	comparison.CompareEqualityFloat(0, v1.X, t)
+	comparison.CompareEqualityFloat(0, v1.Y, t)
+	comparison.CompareEqualityFloat(-1, v1.Z, t)
+	comparison.CompareEqualityFloat(1, v1.W, t)
 }
 
 func TestTranslate(t *testing.T) {
@@ -35,8 +23,8 @@ func TestTranslate(t *testing.T) {
 	mat := matrix.NewIdentity().Translate(vector.Vec3{1, 1, 0})
 	v1 = mat.MultiplyVector(v1)
 
-	CompareFloat(513, v1.X, t)
-	CompareFloat(385, v1.Y, t)
+	comparison.CompareEqualityFloat(513, v1.X, t)
+	comparison.CompareEqualityFloat(385, v1.Y, t)
 }
 
 func TestRotateZ(t *testing.T) {
@@ -44,8 +32,8 @@ func TestRotateZ(t *testing.T) {
 	mat := matrix.NewIdentity().RotateZ(180)
 	v1 = mat.MultiplyVector(v1)
 
-	CompareFloat(-512, Round(v1.X), t)
-	CompareFloat(-384, Round(v1.Y), t)
+	comparison.CompareEqualityFloat(-512, comparison.Round(v1.X), t)
+	comparison.CompareEqualityFloat(-384, comparison.Round(v1.Y), t)
 }
 
 func TestScaleAndInverse(t *testing.T) {
@@ -53,14 +41,14 @@ func TestScaleAndInverse(t *testing.T) {
 	mat := matrix.NewIdentity().Scale(vector.Vec3{2, 2, 2})
 	v1 = mat.MultiplyVector(v1)
 
-	CompareFloat(5, Round(v1.X), t)
-	CompareFloat(8, Round(v1.Y), t)
-	CompareFloat(2, Round(v1.Z), t)
+	comparison.CompareEqualityFloat(5, comparison.Round(v1.X), t)
+	comparison.CompareEqualityFloat(8, comparison.Round(v1.Y), t)
+	comparison.CompareEqualityFloat(2, comparison.Round(v1.Z), t)
 
 	mat = mat.Inverse()
 	v1 = mat.MultiplyVector(v1)
 
-	CompareFloat(2.5, v1.X, t)
-	CompareFloat(4, v1.Y, t)
-	CompareFloat(1, v1.Z, t)
+	comparison.CompareEqualityFloat(2.5, v1.X, t)
+	comparison.CompareEqualityFloat(4, v1.Y, t)
+	comparison.CompareEqualityFloat(1, v1.Z, t)
 }

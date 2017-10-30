@@ -9,7 +9,7 @@ import (
 type ISystem interface {
 	Update()
 	HandleEvent(*event.Event)
-	ValidateEntity(entity entity.IEntity)
+	ValidateAddEntity(entity entity.IEntity)
 	RemoveEntity(entity entity.EID)
 }
 

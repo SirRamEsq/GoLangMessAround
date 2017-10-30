@@ -1,7 +1,7 @@
 package entity
 
 import (
-	log "lengine/logging"
+	log "lengine/logger"
 	"strconv"
 )
 
