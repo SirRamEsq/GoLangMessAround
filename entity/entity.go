@@ -1,6 +1,9 @@
 package entity
 
-import "strconv"
+import (
+	log "lengine/logging"
+	"strconv"
+)
 
 /*
   We have almost endless EIDs
@@ -40,6 +43,16 @@ type Entity struct {
 
 func (e *Entity) EID() EID {
 	return e.eid
+}
+
+func (e *Entity) SetEID(newEID EID) bool {
+	//only set if eid hasn't been set before
+	if e.eid == 0 {
+		e.eid = newEID
+		return true
+	}
+	log.Warning("Entity with '" + e.eid.String() + "' tried to be set to '" + newEID.String() + "' and failed")
+	return false
 }
 
 /*
