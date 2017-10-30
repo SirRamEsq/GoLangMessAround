@@ -15,16 +15,27 @@ type prefabMovePos struct {
 	position.Position
 	movement.Movement
 }
+type prefabWrong struct {
+	entity.Entity
+}
 
 func TestValidateEntity(t *testing.T) {
 	prefab := prefabMovePos{}
 	prefab.SetEID(entity.New())
+
+	prefab2 := prefabWrong{}
+	prefab2.SetEID(entity.New())
 
 	system := SystemMovement{}
 	system.Entities = make(map[entity.EID]entity.IEntity)
 
 	if !system.ValidateAddEntity(&prefab) {
 		errorString := "System could not validate Entity!"
+		t.Error(errorString)
+	}
+
+	if system.ValidateAddEntity(&prefab2) {
+		errorString := "System should not have validated Entity!"
 		t.Error(errorString)
 	}
 }
@@ -39,7 +50,9 @@ func TestUpdateMovement(t *testing.T) {
 	startPos := vector.Vec3{5, 5, 0}
 	startVel := vector.Vec3{1, 2, 0}
 	startAcc := vector.Vec3{.1, 1, 0}
+	maxVelocity := vector.Vec3{16, 16, 16}
 
+	prefab.SetMaxVelocity(maxVelocity)
 	prefab.SetPosition(startPos)
 	prefab.SetVelocity(startVel)
 	prefab.SetAcceleration(startAcc)
@@ -57,7 +70,7 @@ func TestUpdateMovement(t *testing.T) {
 	comparison.CompareEqualityFloat(startAcc.Z+startVel.Z, prefab.GetVelocity().Z, t)
 
 	//Make sure speeds get clamped to their max velocity
-	maxVelocity := vector.Vec3{11, 18, 17}
+	maxVelocity = vector.Vec3{11, 18, 17}
 	prefab.SetMaxVelocity(maxVelocity)
 	zeroPos := vector.Vec3{0, 0, 0}
 	tooFast := vector.Vec3{17, -20, 100}

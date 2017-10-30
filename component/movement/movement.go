@@ -19,6 +19,26 @@ type Movement struct {
 }
 
 func (move *Movement) SetVelocity(newSpeed vector.Vec3) {
+	maxVelocity := move.maxVelocity
+
+	if newSpeed.X > maxVelocity.X {
+		newSpeed.X = maxVelocity.X
+	}
+	if newSpeed.Y > maxVelocity.Y {
+		newSpeed.Y = maxVelocity.Y
+	}
+	if newSpeed.Z > maxVelocity.Z {
+		newSpeed.Z = maxVelocity.Z
+	}
+	if newSpeed.X < -maxVelocity.X {
+		newSpeed.X = -maxVelocity.X
+	}
+	if newSpeed.Y < -maxVelocity.Y {
+		newSpeed.Y = -maxVelocity.Y
+	}
+	if newSpeed.Z < -maxVelocity.Z {
+		newSpeed.Z = -maxVelocity.Z
+	}
 	move.velocity = newSpeed
 }
 func (move *Movement) SetAcceleration(newSpeed vector.Vec3) {

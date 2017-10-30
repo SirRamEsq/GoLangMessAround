@@ -3,10 +3,8 @@ package systemMovement
 import (
 	"lengine/component/movement"
 	"lengine/component/position"
-	"lengine/coordinates/vector"
 	"lengine/entity"
 	"lengine/event"
-	log "lengine/logger"
 	"lengine/system"
 	"reflect"
 )
@@ -30,7 +28,6 @@ func (sys *SystemMovement) ValidateEntity(ent entity.IEntity) bool {
 	}
 
 	move, _ := ent.(movement.Interface)
-	move.SetMaxVelocity(vector.Vec3{16, 16, 16})
 
 	return true
 }
@@ -46,17 +43,8 @@ func (sys *SystemMovement) ValidateAddEntity(ent entity.IEntity) bool {
 
 func (sys *SystemMovement) Update() {
 	for _, value := range sys.Entities {
-		pos, ok := value.(position.Interface)
-		if !ok {
-			log.Error("Cannot get position interface")
-			return
-		}
-
-		move, ok := value.(movement.Interface)
-		if !ok {
-			log.Error("Cannot get movement interface")
-			return
-		}
+		pos, _ := value.(position.Interface)
+		move, _ := value.(movement.Interface)
 
 		sys.UpdateMovement(pos, move)
 	}
@@ -65,32 +53,15 @@ func (sys *SystemMovement) Update() {
 func (sys *SystemMovement) UpdateMovement(pos position.Interface, movement movement.Interface) {
 	newPosition := pos.GetPosition()
 
-	maxVelocity := movement.GetMaxVelocity()
+	//update position
 	velocity := movement.GetVelocity()
-
-	if velocity.X > maxVelocity.X {
-		velocity.X = maxVelocity.X
-	}
-	if velocity.Y > maxVelocity.Y {
-		velocity.Y = maxVelocity.Y
-	}
-	if velocity.Z > maxVelocity.Z {
-		velocity.Z = maxVelocity.Z
-	}
-	if velocity.X < -maxVelocity.X {
-		velocity.X = -maxVelocity.X
-	}
-	if velocity.Y < -maxVelocity.Y {
-		velocity.Y = -maxVelocity.Y
-	}
-	if velocity.Z < -maxVelocity.Z {
-		velocity.Z = -maxVelocity.Z
-	}
-
 	newPosition = newPosition.AddVec3(velocity)
+	pos.SetPosition(newPosition)
+
+	//update velocity
 	velocity = velocity.AddVec3(movement.GetAcceleration())
 
-	pos.SetPosition(newPosition)
+	//set and clamp velocity
 	movement.SetVelocity(velocity)
 }
 
