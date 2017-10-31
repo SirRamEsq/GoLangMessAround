@@ -27,8 +27,6 @@ func (sys *SystemMovement) ValidateEntity(ent entity.IEntity) bool {
 		return false
 	}
 
-	move, _ := ent.(movement.Interface)
-
 	return true
 }
 
