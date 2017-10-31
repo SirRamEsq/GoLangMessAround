@@ -1,10 +1,14 @@
 package texture
 
 import (
+	"fmt"
 	"image"
 	"image/draw"
+	_ "image/png"
+	"lengine/logger"
 	"log"
 	"os"
+	"strconv"
 
 	"github.com/go-gl/gl/v3.3-core/gl"
 )
@@ -20,6 +24,17 @@ type Texture struct {
 
 	data *image.RGBA
 	glID uint32
+	name string
+}
+
+func (t *Texture) String() string {
+	returnValue := "\r\nTexture " + t.name + ":"
+	returnValue += "\r\n Width:  " + strconv.Itoa(t.w)
+	returnValue += "\r\n Height: " + strconv.Itoa(t.h)
+	returnValue += "\r\n GL-ID:  " + strconv.FormatUint(uint64(t.glID), 10)
+	returnValue += fmt.Sprintf("\r\n Data*:  %p", t.data)
+	returnValue += "\r\n___"
+	return returnValue
 }
 
 //Width returns the texture width
@@ -70,6 +85,11 @@ func newTexture(fileName string) *Texture {
 	var texID uint32
 	gl.Enable(gl.TEXTURE_2D)
 	gl.GenTextures(1, &texID)
+
+	if texID == 0 {
+		panic("Texture ID is 0!")
+	}
+
 	gl.BindTexture(gl.TEXTURE_2D, texID)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR)
 	gl.TexParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR)
@@ -89,8 +109,13 @@ func newTexture(fileName string) *Texture {
 	texture := Texture{w: rgba.Rect.Size().X,
 		h:    rgba.Rect.Size().Y,
 		glID: texID,
-		data: rgba}
+		data: rgba,
+		name: fileName}
 
+	glError := gl.GetError()
+	if glError != 0 {
+		logger.Critical(fmt.Sprintf("GL Error: %d", glError))
+	}
 	return &texture
 }
 
