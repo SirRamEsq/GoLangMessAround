@@ -66,3 +66,7 @@ func (sys *SystemMovement) UpdateMovement(pos position.Interface, movement movem
 func (sys *SystemMovement) HandleEvent(e *event.Event) {
 
 }
+
+func (sys *SystemMovement) RemoveEntity(id entity.EID) {
+	sys.Remove(id)
+}
