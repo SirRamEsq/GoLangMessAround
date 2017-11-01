@@ -1,9 +1,10 @@
-package dispatcher
+package dispatcher_test
 
 import (
 	"lengine/entity"
 	"lengine/entity/manager"
 	"lengine/event"
+	"lengine/event/dispatcher"
 	"lengine/testing/comparison"
 	"testing"
 )
@@ -28,8 +29,9 @@ func (p *prefab) HandleEvent(e event.Event) {
 }
 
 func TestSendRecieve(t *testing.T) {
-	dis := EventDispatcher{}
+	dis := dispatcher.EventDispatcher{}
 	dis.Init()
+	dispatcher.SetActiveDispatcher(&dis)
 	eMan := manager.EntityManager{}
 
 	ent1 := prefab{}
@@ -38,20 +40,20 @@ func TestSendRecieve(t *testing.T) {
 	ent2 := prefab{}
 	ent2.SetEID(eMan.NewEID())
 
-	dis.Register(ent1.EID(), &ent1)
-	dis.Register(ent2.EID(), &ent2)
+	dispatcher.Register(ent1.EID(), &ent1)
+	dispatcher.Register(ent2.EID(), &ent2)
 
 	inputEID := entity.EID_SUB_INPUT
-	dis.Listen(event.KEY_DOWN, inputEID, &ent1)
-	dis.Listen(event.KEY_UP, inputEID, &ent1)
+	dispatcher.Listen(event.KEY_DOWN, inputEID, &ent1)
+	dispatcher.Listen(event.KEY_UP, inputEID, &ent1)
 
 	keyUp := event.BasicEvent{T: event.KEY_UP, Message: "Up", Sender: inputEID}
 	keyDown := event.BasicEvent{T: event.KEY_DOWN, Message: "Up", Sender: inputEID}
 	weird := event.BasicEvent{T: event.MISC, Message: "Other", Sender: ent1.EID()}
 
-	dis.Broadcast(&keyUp)
-	dis.Broadcast(&keyDown)
-	dis.Send(&weird, ent2.EID())
+	dispatcher.Broadcast(&keyUp)
+	dispatcher.Broadcast(&keyDown)
+	dispatcher.Send(&weird, ent2.EID())
 
 	comparison.CompareEqualityString(ent1.LastKeyDown, keyDown.Message, t)
 	comparison.CompareEqualityString(ent1.LastKeyUp, keyUp.Message, t)

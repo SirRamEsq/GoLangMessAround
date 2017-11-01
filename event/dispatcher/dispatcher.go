@@ -61,3 +61,25 @@ func (e *EventDispatcher) Send(thisEvent event.Event, reciever entity.EID) {
 	handler := e.registered[reciever]
 	handler.HandleEvent(thisEvent)
 }
+
+/*
+The following functions allow this package to be used as a singleton
+*/
+var globalDispatcher *EventDispatcher
+
+func SetActiveDispatcher(e *EventDispatcher) {
+	globalDispatcher = e
+}
+
+func Broadcast(thisEvent event.Event) {
+	globalDispatcher.Broadcast(thisEvent)
+}
+func Listen(t event.Type, id entity.EID, handler EventHandler) {
+	globalDispatcher.Listen(t, id, handler)
+}
+func Register(id entity.EID, handler EventHandler) {
+	globalDispatcher.Register(id, handler)
+}
+func Send(thisEvent event.Event, reciever entity.EID) {
+	globalDispatcher.Send(thisEvent, reciever)
+}
