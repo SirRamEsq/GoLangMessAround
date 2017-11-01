@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"lengine/entity"
 	"lengine/event"
+	"lengine/event/dispatcher"
+	"strconv"
 
 	"github.com/veandco/go-sdl2/sdl"
 )
@@ -34,25 +36,26 @@ type Input struct {
 }
 
 func (in *Input) sendEvent(keyName string, t event.Type) {
-
+	keyEvent := event.BasicEvent{Sender: entity.EID_SUB_INPUT, Message: keyName, T: t}
+	dispatcher.Broadcast(&keyEvent)
 }
 
 func (in *Input) keyPress(keyName string) {
-	in.sendEvent(keyName, event.KeyDown)
+	in.sendEvent(keyName, event.KEY_DOWN)
 }
 
 func (in *Input) keyRelease(keyName string) {
-	in.sendEvent(keyName, event.KeyUp)
+	in.sendEvent(keyName, event.KEY_UP)
 }
 
 func (in *Input) SimulateKeyPress(keyName string) {
-	kEvent := keyEvent{KeyName: keyName, EType: event.KeyDown}
+	kEvent := keyEvent{KeyName: keyName, EType: event.KEY_DOWN}
 	//appending will change slice address pointed to
 	in.simulatedInput = append(in.simulatedInput, kEvent)
 }
 
 func (in *Input) SimulateKeyRelease(keyName string) {
-	kEvent := keyEvent{KeyName: keyName, EType: event.KeyUp}
+	kEvent := keyEvent{KeyName: keyName, EType: event.KEY_UP}
 	in.simulatedInput = append(in.simulatedInput, kEvent)
 }
 
@@ -85,7 +88,7 @@ func (in *Input) Update() {
 
 	// Process simulated Input first
 	for _, value := range in.simulatedInput {
-		if value.EType == event.KeyDown {
+		if value.EType == event.KEY_DOWN {
 			in.keyRelease(value.KeyName)
 		} else {
 			in.keyPress(value.KeyName)
@@ -114,8 +117,16 @@ func GetKeyMapFromFile(fileName string) (KeyMapping, error) {
 		return mapping, err
 	}
 
-	//mappingTemp := make(map[int]string)
-	err = json.Unmarshal(file, mapping)
+	mappingTemp := make(map[string]string)
+	err = json.Unmarshal(file, &mappingTemp)
+	if err != nil {
+		return mapping, err
+	}
+
+	for k, v := range mappingTemp {
+		key, _ := strconv.ParseInt(k, 10, 32)
+		mapping[sdl.Keycode(key)] = v
+	}
 
 	return mapping, err
 }

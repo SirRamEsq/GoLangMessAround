@@ -12,6 +12,7 @@ const (
 	EID_NONE      EID = 0
 	EID_ALL       EID = 1
 	EID_SUB_INPUT EID = 2
+	EID_STATE     EID = 3
 	//minimum eid allowed, the rest are reserved
 	EID_MIN EID = 10
 )
