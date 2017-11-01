@@ -6,11 +6,6 @@ import (
 	"lengine/system"
 )
 
-const (
-	//minimum eid allowed, the rest are reserved
-	eidMin = 10
-)
-
 type EntityManager struct {
 	systems     []system.ISystem
 	maxInUseEID entity.EID
@@ -21,7 +16,7 @@ func (eMan *EntityManager) AddSystem(sys system.ISystem) {
 }
 
 func (eMan *EntityManager) Init() {
-	eMan.maxInUseEID = eidMin
+	eMan.maxInUseEID = entity.EID_MIN
 }
 
 func (eMan *EntityManager) NewEID() entity.EID {

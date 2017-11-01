@@ -20,11 +20,12 @@ type prefabWrong struct {
 }
 
 func TestValidateEntity(t *testing.T) {
+	eMan := EntityManager{}
 	prefab := prefabMovePos{}
-	prefab.SetEID(entity.New())
+	prefab.SetEID(eMan.NewEID())
 
 	prefab2 := prefabWrong{}
-	prefab2.SetEID(entity.New())
+	prefab2.SetEID(eMan.NewEID())
 
 	system := SystemMovement{}
 	system.Entities = make(map[entity.EID]entity.IEntity)

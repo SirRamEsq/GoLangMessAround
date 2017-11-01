@@ -13,7 +13,8 @@ type State interface {
 }
 
 type PrimaryState struct {
-	entityMan manager.EntityManager
+	entityMan       manager.EntityManager
+	eventDispatcher dispatcher.EventDispatcher
 }
 
 func (state *PrimaryState) Init() {

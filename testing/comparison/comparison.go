@@ -1,6 +1,7 @@
 package comparison
 
 import (
+	"lengine/entity"
 	"math"
 	"strconv"
 	"testing"
@@ -34,6 +35,34 @@ func CompareEqualityBool(expected bool, actual bool, t *testing.T) {
 func CompareInequalityBool(expected bool, actual bool, t *testing.T) {
 	if expected == actual {
 		errorString := "Expected NOT: " + strconv.FormatBool(expected) + " - Actual: " + strconv.FormatBool(actual)
+		t.Error(errorString)
+	}
+}
+
+func CompareEqualityString(expected string, actual string, t *testing.T) {
+	if expected != actual {
+		errorString := "Expected: " + expected + " - Actual: " + actual
+		t.Error(errorString)
+	}
+}
+
+func CompareInequalityString(expected string, actual string, t *testing.T) {
+	if expected == actual {
+		errorString := "Expected NOT: " + expected + " - Actual: " + actual
+		t.Error(errorString)
+	}
+}
+
+func CompareEqualityEID(expected entity.EID, actual entity.EID, t *testing.T) {
+	if expected != actual {
+		errorString := "Expected: " + expected.String() + " - Actual: " + actual.String()
+		t.Error(errorString)
+	}
+}
+
+func CompareInequalityEID(expected entity.EID, actual entity.EID, t *testing.T) {
+	if expected == actual {
+		errorString := "Expected NOT: " + expected.String() + " - Actual: " + actual.String()
 		t.Error(errorString)
 	}
 }

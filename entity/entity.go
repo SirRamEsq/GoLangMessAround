@@ -5,6 +5,17 @@ import (
 	"strconv"
 )
 
+//EID is an Entity ID; a unique identifier for entities
+type EID uint64
+
+const (
+	EID_NONE      EID = 0
+	EID_ALL       EID = 1
+	EID_SUB_INPUT EID = 2
+	//minimum eid allowed, the rest are reserved
+	EID_MIN EID = 10
+)
+
 /*
   We have almost endless EIDs
   To put into perspective,
@@ -15,9 +26,6 @@ import (
   with a uint32 we get 4 days
   ((2^32) / (60 * 200)) / 60 / 60 / 24 = 4.14
 */
-
-//EID is an Entity ID; a unique identifier for entities
-type EID uint64
 
 func (eid EID) String() string {
 	return "EID: " + strconv.FormatUint(uint64(eid), 10)
