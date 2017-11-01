@@ -4,10 +4,18 @@ import (
 	"lengine/entity"
 )
 
+type Type int
+
+const (
+	KeyUp Type = iota
+	KeyDown
+)
+
 //Event interface encapsulates a basic event
 type Event interface {
 	Sender() entity.EID
 	Reciever() entity.EID
+	Type() Type
 	Message() string
 }
 
@@ -47,4 +55,9 @@ func (m *Messager) Messager() string {
 type BasicEvent struct {
 	SendRecieve
 	Messager
+	T Type
+}
+
+func (e *BasicEvent) Type() Type {
+	return e.T
 }
