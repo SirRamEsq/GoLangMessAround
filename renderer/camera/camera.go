@@ -3,11 +3,20 @@ package camera
 import (
 	"lengine/coordinates/matrix"
 	"lengine/coordinates/vector"
+	"lengine/renderer/drawcall"
+	"lengine/renderer/renderable"
 	"lengine/resources/texture"
 	"unsafe"
 
 	"github.com/go-gl/gl/v2.1/gl"
 )
+
+type ICamera interface {
+	Bind(CameraUBO uint32)
+	GetProjection()
+	GetModelView()
+	Render(*[]renderable.Renderable) *[]*drawcall.DrawCall
+}
 
 type Frustrum struct {
 	Near float64
@@ -91,4 +100,13 @@ func (cam *Camera) Bind(CameraUBO uint32) {
 	// Atatch buffer texture
 	gl.FramebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D,
 		cam.FrameBufferTexture.ID(), 0)
+}
+
+func (cam *Camera) Render(renderables *[]renderable.Renderable) *[]*drawcall.DrawCall {
+	//Has capacity of len(renderables)
+	drawCalls := make([]*drawcall.DrawCall, 0, len(*renderables))
+	for _, v := range *renderables {
+		drawCalls = append(drawCalls, v.Render())
+	}
+	return &drawCalls
 }
