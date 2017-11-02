@@ -19,8 +19,8 @@ var (
 
 //Texture represents an openGlTexture
 type Texture struct {
-	w int
-	h int
+	w int32
+	h int32
 
 	data *image.RGBA
 	glID uint32
@@ -29,8 +29,8 @@ type Texture struct {
 
 func (t *Texture) String() string {
 	returnValue := "\r\nTexture " + t.name + ":"
-	returnValue += "\r\n Width:  " + strconv.Itoa(t.w)
-	returnValue += "\r\n Height: " + strconv.Itoa(t.h)
+	returnValue += "\r\n Width:  " + strconv.Itoa(int(t.w))
+	returnValue += "\r\n Height: " + strconv.Itoa(int(t.h))
 	returnValue += "\r\n GL-ID:  " + strconv.FormatUint(uint64(t.glID), 10)
 	returnValue += fmt.Sprintf("\r\n Data*:  %p", t.data)
 	returnValue += "\r\n___"
@@ -38,12 +38,12 @@ func (t *Texture) String() string {
 }
 
 //Width returns the texture width
-func (t *Texture) Width() int {
+func (t *Texture) Width() int32 {
 	return t.w
 }
 
 //Height returns the texture height
-func (t *Texture) Height() int {
+func (t *Texture) Height() int32 {
 	return t.h
 }
 
@@ -106,8 +106,8 @@ func newTexture(fileName string) *Texture {
 		gl.UNSIGNED_BYTE,
 		gl.Ptr(rgba.Pix))
 
-	texture := Texture{w: rgba.Rect.Size().X,
-		h:    rgba.Rect.Size().Y,
+	texture := Texture{w: int32(rgba.Rect.Size().X),
+		h:    int32(rgba.Rect.Size().Y),
 		glID: texID,
 		data: rgba,
 		name: fileName}

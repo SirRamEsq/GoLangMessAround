@@ -41,6 +41,19 @@ func NewOrthographic(viewSize vector.Vec2) Matrix {
 			-1.0, 1.0, 0.0, 1.0}}
 }
 
+//NewProjection returns a new Matrix with an orthographic perspective
+func NewProjection(fov float64, aspect float64, near float64, far float64) Matrix {
+	f := 1.0 / math.Tan(fov/2.0)
+	nf := 1.0 / (near - far)
+
+	return Matrix{
+		[16]float64{
+			f / aspect, 0.0, 0.0, 0.0,
+			0.0, f, 0.0, 0.0,
+			0.0, 0.0, (far + near) * nf, -1.0,
+			0.0, 0.0, (2 * far * near) * nf, 0.0}}
+}
+
 //NewIdentity returns a new Identity Matrix
 func NewIdentity() Matrix {
 	return Matrix{
