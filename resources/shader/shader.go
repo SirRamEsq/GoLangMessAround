@@ -3,6 +3,7 @@ package shader
 import (
 	"errors"
 	"lengine/logger"
+	"lengine/resources"
 	"strings"
 
 	"github.com/go-gl/gl/v2.1/gl"
@@ -39,7 +40,7 @@ func CheckShaderCompileErrors(handle uint32) (bool, error) {
 	return true, nil
 }
 
-func NewShader(sourceCode string, t uint32) Shader {
+func NewShader(sourceCode string, t uint32) *Shader {
 	shader := Shader{SourceCode: sourceCode, shaderType: t}
 
 	handle := gl.CreateShader(t)
@@ -62,5 +63,10 @@ func NewShader(sourceCode string, t uint32) Shader {
 	shader.IsUsable = usable
 	shader.glID = handle
 
-	return shader
+	return &shader
+}
+
+func NewShaderFromBinaryData(data resources.BinaryData, t uint32) *Shader {
+	sourceCode := data.String()
+	return NewShader(sourceCode, t)
 }
